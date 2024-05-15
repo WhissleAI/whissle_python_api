@@ -6,3 +6,12 @@ Multi-modal python API
 
 ## Running the App
 `flask run --app audio_api.app:create_app`
+
+## Running the API on a server
+`
+#!/bin/bash
+
+export FLASK_APP=audio_api.app:create_app
+export FLASK_ENV=development
+flask run
+`
