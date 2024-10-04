@@ -1,54 +1,39 @@
-# Whissle python API Client
+# Whissle API Python Package
+
+`whissle` is a Python package that provides easy access to the Whissle API for conversation, Speech-to-Text (STT), and Text-to-Speech (TTS) functionalities. 
+
+## Features
+
+- **Send Conversation Messages**: Send conversation content with emotion and receive intelligent responses.
+- **Speech-to-Text (STT)**: Convert audio files (WAV format) into text.
+- **Text-to-Speech (TTS)**: Convert text into audio files in WAV format.
+
+## Installation
 
 ```
-pip import whissle
-```
+import whissle
 
-### python requirements (for pushing to pypi)
+# Set the auth token
+whissle.set_auth_token("4db0b480a7b24be8")
 
-Ensure you have `twine` installed:
-
-```bash
-pip install twine
-```
-
-Build and publish
-```
-python setup.py sdist bdist_wheel
-twine upload dist/*
-```
-
-### Usage 
-
-```
-from whissle.client import WhissleClient
-
-client = WhissleClient(base_url="https://whissle.ai")
-
-# Create a conversation
-response = client.create_conversation(email="user@example.com")
-print(response)
-
-# Send a message
-response = client.send_message(
-    conversation_id="12345",
-    content="Hello, how are you?",
-    emotion="happy",
-    model_name="whissle",
-    searchengine="google",
-    system_instruction="Provide a friendly response",
-    url="https://example.com",
-    conversation_history=[]
+# Use the conversation message function
+response = whissle.send_message(
+    conversation_history='[]',
+    content='summarize the audio for me',
+    emotion='EMOTION_SAD'
 )
 print(response)
 
-# Fetch a conversation
-response = client.fetch_conversation(conversation_id="12345")
-print(response)
+# Speech-to-text functionality
+stt_response = whissle.speech_to_text('/path/to/audio.wav')
+print(stt_response)
 
-# Fetch all conversations for a user
-response = client.fetch_all_conversations(email="user@example.com")
-print(response)
-
-
+# Text-to-speech functionality
+tts_response = whissle.text_to_speech(
+    text='Hello, this is an example.',
+    output_filename='output.wav'
+)
+print(tts_response)
 ```
+
+
