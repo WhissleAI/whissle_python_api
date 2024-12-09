@@ -5,9 +5,12 @@ from typing import Literal
 class ASRModel(BaseModel):
     model: str
 
-
 class STTResponse(BaseModel):
-    text: str
+    transcript: str
+    duration_seconds: float
+
+class MTResposne(BaseModel):
+    translated_text: str
 
 
 ASRModelList = Literal[

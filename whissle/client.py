@@ -3,7 +3,7 @@ from typing import List
 
 import httpx
 
-from .models import ASRModel, STTResponse, ASRModelList
+from .models import ASRModel, STTResponse, ASRModelList, MTResposne
 
 
 class HttpError(Exception):
@@ -47,7 +47,7 @@ class WhissleClient:
         }
 
         try:
-            url = f"{url}&auth_token={self.auth_token}"
+            url = self._append_auth_token(url)
             response = await self.httpx_client.get(url, headers=headers)
 
             response.raise_for_status()
@@ -70,6 +70,12 @@ class WhissleClient:
                         'audio': ('file', open(file, 'rb'), 'application/octet-stream')
                     }
                 )
+            elif data:
+                response = await self.httpx_client.post(
+                    url=url,
+                    headers={"Content-Type": "application/json"},
+                    json=data
+                )
 
             response.raise_for_status()
             return response.json()
@@ -78,14 +84,17 @@ class WhissleClient:
             raise HttpError(e.response.status_code, e.response.text)
         
     async def list_asr_models(self) -> List[ASRModel]:
-        response_data = await self.authorized_get(f"/projects/{self.project_id}")
-        return [ASRModel(**model) for model in response_data]
+        response_data = await self.authorized_get(f"/list-asr-models")
+        return response_data
 
     async def speech_to_text(
         self, audio_file_path, model_name: ASRModelList
     ) -> STTResponse:
         url = f"/conversation/STT?model_name={model_name}"
         response = await self.authorized_post(url, file=audio_file_path)
-        return response
+        return STTResponse(**response)
     
-    # TODO: Add a batch processing method for numerous files (queuing based)
+    async def machine_translation(self, text: str, target_language: str) -> MTResposne:
+        url = f"/MT"
+        response = await self.authorized_post(url, data={"text": text, "target_language": target_language})
+        return MTResposne(**response)
