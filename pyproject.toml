@@ -3,7 +3,7 @@ name = "whissle"
 version = "0.0.1"
 description = "Reusable Python client implementation for Whissle API."
 authors = [
-    {name = "Nihar Sanda", email = "niharsandawrl@gmail.com"}
+    {name = "Nihar Sanda", email = "nsanda@whissle.ai"}
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
