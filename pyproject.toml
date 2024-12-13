@@ -1,0 +1,63 @@
+[project]
+name = "whissle"
+version = "0.0.1"
+description = "Reusable Python client implementation for Whissle API."
+authors = [
+    {name = "Nihar Sanda", email = "niharsandawrl@gmail.com"}
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">3.6"
+
+keywords = ["stt", "tts", "streaming", "real-time"]
+
+classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+    ]
+
+dependencies = [
+    "python-dotenv",
+    "pydantic", 
+    "httpx"
+]
+
+[project.optional-dependencies]
+all = [
+    "pre-commit",
+    "ruff",
+    "python-dotenv",
+    "pydantic", 
+    "httpx"
+]
+
+dev = [
+    "pre-commit",
+    "ruff"
+]
+
+[project.urls]
+homepath = "https://github.com/WhissleAI"
+documentation = "https://github.com/WhissleAI"
+repository = "https://github.com/WhissleAI"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
