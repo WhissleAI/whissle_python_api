@@ -95,6 +95,6 @@ class WhissleClient:
         return STTResponse(**response)
     
     async def machine_translation(self, text: str, target_language: str) -> MTResposne:
-        url = f"/MT"
-        response = await self.authorized_post(url, data={"text": text, "target_language": target_language})
+        url = f"/MT?target_language={target_language}"
+        response = await self.authorized_post(url, data={"text": text})
         return MTResposne(**response)
