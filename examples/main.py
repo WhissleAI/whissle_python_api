@@ -23,13 +23,13 @@ async def do_speech_to_text(file_path, model_name):
     print(text)
 
 
-async def do_translation(text, target_language):
+async def do_translation(text, source_language, target_language):
     """Translate text to target language."""
     whissle = WhissleClient()
     translation = await whissle.machine_translation(
-        text, target_language=target_language
+        text, source_language=source_language, target_language=target_language
     )
-    print(f"Translation to {target_language}:")
+    print(f"Translation from {source_language} to {target_language}:")
     print(translation)
 
 
@@ -63,6 +63,9 @@ def main():
     parser_trans = subparsers.add_parser("translate", help="Translate text")
     parser_trans.add_argument("text", help="Text to translate")
     parser_trans.add_argument(
+        "--source", default="en", help="Source language (default: en)"
+    )
+    parser_trans.add_argument(
         "--target", default="es", help="Target language (default: es)"
     )
 
@@ -85,7 +88,7 @@ def main():
     elif args.command == "speech-to-text":
         asyncio.run(do_speech_to_text(args.file_path, args.model))
     elif args.command == "translate":
-        asyncio.run(do_translation(args.text, args.target))
+        asyncio.run(do_translation(args.text, args.source, args.target))
     elif args.command == "summarize":
         asyncio.run(llm_text_summarizer(args.content, args.model, args.instruction))
     else:
