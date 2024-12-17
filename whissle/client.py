@@ -3,7 +3,13 @@ from typing import List
 
 import httpx
 
-from .models import ASRModel, STTResponse, ASRModelList, MTResposne, LLMSummarizerResponse
+from .models import (
+    ASRModel,
+    ASRModelList,
+    LLMSummarizerResponse,
+    MTResposne,
+    STTResponse,
+)
 
 
 class HttpError(Exception):
@@ -21,7 +27,9 @@ class WhissleClient:
 
         # Raise an error if no auth token is found
         if not auth_token:
-            raise ValueError("No authentication token provided. Please pass an auth_token or set WHISSLE_AUTH_TOKEN environment variable.")
+            raise ValueError(
+                "No authentication token provided. Please pass an auth_token or set WHISSLE_AUTH_TOKEN environment variable."
+            )
 
         self.auth_token = auth_token
 
@@ -29,7 +37,7 @@ class WhissleClient:
         self.httpx_client = httpx.AsyncClient(base_url=self.server_url)
 
     def _append_auth_token(self, url):
-        separator = '&' if '?' in url else '?'
+        separator = "&" if "?" in url else "?"
         return f"{url}{separator}auth_token={self.auth_token}"
 
     async def authorized_get(self, url):
@@ -67,14 +75,12 @@ class WhissleClient:
                     headers=headers,
                     data=data or {},
                     files={
-                        'audio': ('file', open(file, 'rb'), 'application/octet-stream')
-                    }
+                        "audio": ("file", open(file, "rb"), "application/octet-stream")
+                    },
                 )
             elif data:
                 response = await self.httpx_client.post(
-                    url=url,
-                    headers={"Content-Type": "application/json"},
-                    json=data
+                    url=url, headers={"Content-Type": "application/json"}, json=data
                 )
 
             response.raise_for_status()
@@ -82,9 +88,9 @@ class WhissleClient:
 
         except httpx.HTTPStatusError as e:
             raise HttpError(e.response.status_code, e.response.text)
-        
+
     async def list_asr_models(self) -> List[ASRModel]:
-        response_data = await self.authorized_get(f"/list-asr-models")
+        response_data = await self.authorized_get("/list-asr-models")
         return response_data
 
     async def speech_to_text(
@@ -93,13 +99,24 @@ class WhissleClient:
         url = f"/conversation/STT?model_name={model_name}"
         response = await self.authorized_post(url, file=audio_file_path)
         return STTResponse(**response)
-    
-    async def machine_translation(self, text: str, target_language: str) -> MTResposne:
-        url = f"/MT?target_language={target_language}"
+
+    async def machine_translation(
+        self, text: str, source_language: str, target_language: str
+    ) -> MTResposne:
+        url = f"/MT?source_language{source_language}&target_language={target_language}"
         response = await self.authorized_post(url, data={"text": text})
         return MTResposne(**response)
-    
-    async def llm_text_summarizer(self, content: str, model_name: str, instruction: str) -> LLMSummarizerResponse:
+
+    async def llm_text_summarizer(
+        self, content: str, model_name: str, instruction: str
+    ) -> LLMSummarizerResponse:
         url = "/llm-text-summarizer"
-        response = await self.authorized_post(url, data={"content": content, "model_name": model_name, "instruction": instruction})
+        response = await self.authorized_post(
+            url,
+            data={
+                "content": content,
+                "model_name": model_name,
+                "instruction": instruction,
+            },
+        )
         return LLMSummarizerResponse(**response)

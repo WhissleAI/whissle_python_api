@@ -29,7 +29,7 @@ classifiers=[
 
 dependencies = [
     "python-dotenv",
-    "pydantic", 
+    "pydantic",
     "httpx"
 ]
 
@@ -38,7 +38,7 @@ all = [
     "pre-commit",
     "ruff",
     "python-dotenv",
-    "pydantic", 
+    "pydantic",
     "httpx"
 ]
 

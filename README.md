@@ -1,6 +1,6 @@
 # Whissle API Python Package
 
-`whissle` is a Python package that provides easy access to the Whissle API for conversation, Speech-to-Text (STT), and Text-to-Speech (TTS) functionalities. 
+`whissle` is a Python package that provides easy access to the Whissle API for conversation, Speech-to-Text (STT), and Text-to-Speech (TTS) functionalities.
 
 ## Features (Current)
 
@@ -44,7 +44,7 @@ print(models)
 
 ```python
 response = await client.speech_to_text(
-        audio_file_path="path/to/your/audio.wav", 
+        audio_file_path="path/to/your/audio.wav",
         model_name="en-US-0.6b"
     )
 print(response.text)
@@ -54,7 +54,7 @@ print(response.text)
 
 ```python
 translation = await client.machine_translation(
-        text="Hello, world!", 
+        text="Hello, world!",
         target_language="es"
     )
 print(translation.translated_text)
@@ -91,5 +91,3 @@ Contributions are welcome! Please submit pull requests or open issues on our Git
 ## Contact
 
 For support or inquiries, contact: nsanda@whissle.ai
-
-

@@ -1,13 +1,16 @@
-from pydantic import BaseModel
 from typing import Literal
+
+from pydantic import BaseModel
 
 
 class ASRModel(BaseModel):
     model: str
 
+
 class STTResponse(BaseModel):
     transcript: str
     duration_seconds: float
+
 
 class MTResposne(BaseModel):
     translated_text: str
@@ -18,6 +21,7 @@ class LLMSummarizerResponse(BaseModel):
     input_text: str
     input_tokens: int
     output_tokens: int
+
 
 ASRModelList = Literal[
     "en-US-0.6b",
