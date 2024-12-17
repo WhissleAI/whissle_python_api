@@ -28,6 +28,12 @@ async def do_translation(text, target_language):
     print(f"Translation to {target_language}:")
     print(translation)
 
+async def llm_text_summarizer(content, model_name, instruction):
+    """Summarize text using specified model."""
+    whissle = WhissleClient()
+    summary = await whissle.llm_text_summarizer(content, model_name, instruction)
+    print(f"Summary (using {model_name}):")
+    print(summary)
 
 def main():
     # Load environment variables
@@ -51,6 +57,14 @@ def main():
     parser_trans.add_argument('text', help='Text to translate')
     parser_trans.add_argument('--target', default='es',
                               help='Target language (default: es)')
+    
+    # Summarization subcommand
+    parser_sum = subparsers.add_parser('summarize', help='Summarize text')
+    parser_sum.add_argument('content', help='Text to summarize')
+    parser_sum.add_argument('--model', default='openai',
+                            help='Model name (default: openai)')
+    parser_sum.add_argument('--instruction', default='summarize',
+                            help='Instruction (default: summarize)')
 
     # Parse arguments
     args = parser.parse_args()
@@ -62,6 +76,8 @@ def main():
         asyncio.run(do_speech_to_text(args.file_path, args.model))
     elif args.command == 'translate':
         asyncio.run(do_translation(args.text, args.target))
+    elif args.command == 'summarize':
+        asyncio.run(llm_text_summarizer(args.content, args.model, args.instruction))
     else:
         parser.print_help()
 

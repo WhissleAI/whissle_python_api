@@ -3,7 +3,7 @@ from typing import List
 
 import httpx
 
-from .models import ASRModel, STTResponse, ASRModelList, MTResposne
+from .models import ASRModel, STTResponse, ASRModelList, MTResposne, LLMSummarizerResponse
 
 
 class HttpError(Exception):
@@ -98,3 +98,8 @@ class WhissleClient:
         url = f"/MT?target_language={target_language}"
         response = await self.authorized_post(url, data={"text": text})
         return MTResposne(**response)
+    
+    async def llm_text_summarizer(self, content: str, model_name: str, instruction: str) -> LLMSummarizerResponse:
+        url = "/llm-text-summarizer"
+        response = await self.authorized_post(url, data={"content": content, "model_name": model_name, "instruction": instruction})
+        return LLMSummarizerResponse(**response)

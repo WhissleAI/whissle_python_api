@@ -1,13 +1,13 @@
 [project]
 name = "whissle"
 version = "0.0.1"
-description = "Reusable Python client implementation for Whissle API."
+description = "Python SDK for Whissle API."
 authors = [
     {name = "Nihar Sanda", email = "nsanda@whissle.ai"}
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">3.6"
+requires-python = ">3.8"
 
 keywords = ["stt", "tts", "streaming", "real-time"]
 

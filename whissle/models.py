@@ -13,6 +13,12 @@ class MTResposne(BaseModel):
     translated_text: str
 
 
+class LLMSummarizerResponse(BaseModel):
+    response: str
+    input_text: str
+    input_tokens: int
+    output_tokens: int
+
 ASRModelList = Literal[
     "en-US-0.6b",
     "em-ea-1.1b",
