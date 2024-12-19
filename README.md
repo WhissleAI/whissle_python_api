@@ -6,6 +6,7 @@
 
 - 🔊 Speech-to-Text (STT) conversion with multiple model support
 - 🌍 Machine Translation across various languages
+- Summarization
 
 ## Installation
 
