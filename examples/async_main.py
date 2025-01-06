@@ -9,7 +9,7 @@ from whissle import WhissleClient
 async def list_models():
     """List available ASR models."""
     whissle = WhissleClient()
-    models = await whissle.list_asr_models()
+    models = await whissle.async_client.list_asr_models()
     print("Available ASR Models:")
     for model in models:
         print(model)
@@ -18,7 +18,7 @@ async def list_models():
 async def do_speech_to_text(file_path, model_name):
     """Convert speech to text using specified model."""
     whissle = WhissleClient()
-    text = await whissle.speech_to_text(file_path, model_name=model_name)
+    text = await whissle.async_client.speech_to_text(file_path, model_name=model_name)
     print(f"Transcription (using {model_name}):")
     print(text)
 
@@ -26,7 +26,7 @@ async def do_speech_to_text(file_path, model_name):
 async def do_translation(text, source_language, target_language):
     """Translate text to target language."""
     whissle = WhissleClient()
-    translation = await whissle.machine_translation(
+    translation = await whissle.async_client.machine_translation(
         text, source_language=source_language, target_language=target_language
     )
     print(f"Translation from {source_language} to {target_language}:")
@@ -36,7 +36,9 @@ async def do_translation(text, source_language, target_language):
 async def llm_text_summarizer(content, model_name, instruction):
     """Summarize text using specified model."""
     whissle = WhissleClient()
-    summary = await whissle.llm_text_summarizer(content, model_name, instruction)
+    summary = await whissle.async_client.llm_text_summarizer(
+        content, model_name, instruction
+    )
     print(f"Summary (using {model_name}):")
     print(summary)
 
