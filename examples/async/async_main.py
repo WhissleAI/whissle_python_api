@@ -15,10 +15,14 @@ async def list_models():
         print(model)
 
 
-async def do_speech_to_text(file_path, model_name):
+async def do_speech_to_text(
+    file_path, model_name, timestamps=True, boosted_lm_words=None, boosted_lm_score=None
+):
     """Convert speech to text using specified model."""
     whissle = WhissleClient()
-    text = await whissle.async_client.speech_to_text(file_path, model_name=model_name)
+    text = await whissle.async_client.speech_to_text(
+        file_path, model_name=model_name, timestamps=timestamps
+    )
     print(f"Transcription (using {model_name}):")
     print(text)
 
@@ -60,6 +64,21 @@ def main():
     parser_stt.add_argument(
         "--model", default="en-US-0.6b", help="ASR model name (default: en-US-0.6b)"
     )
+    parser_stt.add_argument(
+        "--timestamps",
+        action="store_true",
+        default=False,
+        help="Include word timestamps in output",
+    )
+    parser_stt.add_argument(
+        "--boosted-lm-words",
+        type=str,
+        nargs="+",
+        help="List of words to boost in language model",
+    )
+    parser_stt.add_argument(
+        "--boosted-lm-score", type=int, help="Score for boosted language model words"
+    )
 
     # Translation subcommand
     parser_trans = subparsers.add_parser("translate", help="Translate text")
@@ -88,7 +107,15 @@ def main():
     if args.command == "list-models":
         asyncio.run(list_models())
     elif args.command == "speech-to-text":
-        asyncio.run(do_speech_to_text(args.file_path, args.model))
+        asyncio.run(
+            do_speech_to_text(
+                args.file_path,
+                args.model,
+                timestamps=args.timestamps,
+                boosted_lm_words=args.boosted_lm_words,
+                boosted_lm_score=args.boosted_lm_score,
+            )
+        )
     elif args.command == "translate":
         asyncio.run(do_translation(args.text, args.source, args.target))
     elif args.command == "summarize":

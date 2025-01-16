@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel
 
@@ -10,6 +10,7 @@ class ASRModel(BaseModel):
 class STTResponse(BaseModel):
     transcript: str
     duration_seconds: float
+    timestamps: Optional[List]
 
 
 class MTResposne(BaseModel):
