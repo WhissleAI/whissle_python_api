@@ -75,9 +75,25 @@ class SyncWhissleClient:
         response_data = self.authorized_get("/list-asr-models")
         return response_data
 
-    def speech_to_text(self, audio_file_path, model_name: ASRModelList) -> STTResponse:
+    def speech_to_text(
+        self,
+        audio_file_path,
+        model_name: ASRModelList,
+        timestamps: bool = False,
+        boosted_lm_words: List[str] = None,
+        boosted_lm_score: int = None,
+    ) -> STTResponse:
         url = f"/conversation/STT?model_name={model_name}"
-        response = self.authorized_post(url, file=audio_file_path)
+
+        data = {}
+        if timestamps is not False:
+            data["word_timestamps"] = str(int(timestamps))
+        if boosted_lm_words is not None:
+            data["boosted_lm_words"] = str(boosted_lm_words)
+        if boosted_lm_score is not None:
+            data["boosted_lm_score"] = str(boosted_lm_score)
+
+        response = self.authorized_post(url, file=audio_file_path, data=data)
         return STTResponse(**response)
 
     def machine_translation(
