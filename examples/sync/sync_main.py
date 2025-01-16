@@ -21,6 +21,9 @@ def main():
     transcription = client.speech_to_text(
         audio_file,
         model_name="en-US-0.6b",  # You can use any model from list_asr_models()
+        timestamps=False,
+        boosted_lm_words=["reformer"],
+        boosted_lm_score=80,
     )
     print(f"Transcription: {transcription}")
 

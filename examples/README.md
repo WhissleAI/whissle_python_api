@@ -1,72 +1,81 @@
-# Whissle CLI Tool Examples
+# Whissle Examples
 
-## Overview
+This directory contains example implementations of the Whissle client, demonstrating both synchronous and asynchronous usage patterns.
 
-This CLI tool demonstrates the capabilities of the Whissle package, providing easy-to-use interfaces for:
-- Listing available Automatic Speech Recognition (ASR) models
-- Converting speech to text
-- Translating text between languages
+## Directory Structure
+
+```
+examples/
+├── async/
+│   ├── README.md
+│   └── whissle_cli.py
+├── sync/
+│   ├── README.md
+│   └── whissle_example.py
+└── README.md (this file)
+```
+
+## Choosing an Implementation
+
+### Synchronous Client (`/sync`)
+Choose this implementation if you:
+- Want simple, straightforward code
+- Are building a script that runs tasks sequentially
+- Don't need to handle multiple operations concurrently
+- Are new to Python or prefer simpler implementations
+- Don't require non-blocking operations
+
+Example of sync usage:
+```python
+from whissle import WhissleClient
+
+client = WhissleClient().sync_client
+result = client.speech_to_text("audio.wav")
+```
+
+### Asynchronous Client (`/async`)
+Choose this implementation if you:
+- Need to handle multiple operations concurrently
+- Are building a web application or API
+- Want to maximize performance for I/O-bound operations
+- Are comfortable with async/await patterns
+- Need non-blocking operations
+
+Example of async usage:
+```python
+from whissle import WhissleClient
+import asyncio
+
+async def main():
+    client = WhissleClient().async_client
+    result = await client.speech_to_text("audio.wav")
+
+asyncio.run(main())
+```
+
+## Features Demonstrated
+
+Both implementations showcase:
+- ASR model listing
+- Speech to text conversion
+- Machine translation
+- Text summarization using LLMs
+
+## Getting Started
+
+1. Choose your preferred implementation (sync or async)
+2. Navigate to the corresponding directory
+3. Follow the README in that directory for specific setup and usage instructions
 
 ## Prerequisites
 
 - Python 3.8+
-- Whissle package installed
-- Environment variables configured (see main package documentation)
+- Whissle package
+- python-dotenv
+- asyncio (for async implementation only)
 
-## Installation
+## Additional Resources
 
-1. Ensure you have the Whissle package installed:
-   ```
-   pip install whissle
-   ```
-
-2. Set up your environment variables (if required)
-
-## Usage
-
-### List Available ASR Models
-
-```bash
-python whissle_cli.py list-models
-```
-
-This command will display all available Automatic Speech Recognition models supported by Whissle.
-
-### Speech to Text Conversion
-
-```bash
-python whissle_cli.py speech-to-text /path/to/audio/file.wav
-```
-
-Optional arguments:
-- `--model`: Specify a custom ASR model (default: en-US-0.6b)
-
-Example:
-```bash
-python whissle_cli.py speech-to-text /recordings/interview.mp3 --model en-US-large
-```
-
-### Text Translation
-
-```bash
-python whissle_cli.py translate "Hello, world!" --target es
-```
-
-Optional arguments:
-- `--target`: Target language code (default: es for Spanish)
-
-Example:
-```bash
-python whissle_cli.py translate "Good morning" --target fr
-```
-
-## Common Use Cases
-
-- Transcribe audio files from various languages
-- Translate transcribed text
-- Explore available ASR models
-
-## Troubleshooting
-
-- Ensure audio files are in a supported format (.wav, .mp4 file support only)
-- Check that your environment variables are correctly set
+- Main Whissle Documentation: Visit the main package documentation
+- API Reference: See the API documentation for detailed method signatures
+- Support: Contact the maintainers for additional help
