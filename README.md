@@ -16,6 +16,12 @@ Install Whissle using pip:
 pip install whissle
 ```
 
+Install Whissle locally:
+
+```bash
+pip install -e .
+```
+
 ## Authentication
 
 To use Whissle, you need an authentication token. You can provide this in two ways:
@@ -37,7 +43,7 @@ export WHISSLE_AUTH_TOKEN=your_auth_token_here
 ### List Available ASR Models
 
 ```python
-models = await client.list_asr_models()
+models = await client.async_client.list_asr_models()
 print(models)
 ```
 
