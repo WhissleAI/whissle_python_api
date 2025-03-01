@@ -13,6 +13,7 @@ class STTResponse(BaseModel):
     language_code: Optional[str]
     timestamps: Optional[List]
 
+
 class DiarizeSTTResponse(BaseModel):
     transcript: str
     duration_seconds: float

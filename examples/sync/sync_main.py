@@ -63,5 +63,6 @@ def main():
     )
     print(f"Transcription: {transcription}")
 
+
 if __name__ == "__main__":
     main()

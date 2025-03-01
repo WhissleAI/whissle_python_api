@@ -5,10 +5,10 @@ import httpx
 from ..models import (
     ASRModel,
     ASRModelList,
+    DiarizeSTTResponse,
     LLMSummarizerResponse,
     MTResposne,
     STTResponse,
-    DiarizeSTTResponse
 )
 from ..options import WhissleClientOptions
 from .errors import HttpError
