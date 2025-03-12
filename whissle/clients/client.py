@@ -5,6 +5,7 @@ import httpx
 from ..models import (
     ASRModel,
     ASRModelList,
+    DiarizeSTTResponse,
     LLMSummarizerResponse,
     MTResposne,
     STTResponse,
@@ -94,6 +95,7 @@ class SyncWhissleClient:
             data["boosted_lm_score"] = str(boosted_lm_score)
 
         response = self.authorized_post(url, file=audio_file_path, data=data)
+        print(response)
         return STTResponse(**response)
 
     def machine_translation(
@@ -116,3 +118,24 @@ class SyncWhissleClient:
             },
         )
         return LLMSummarizerResponse(**response)
+
+    def diarize_stt(
+        self,
+        audio_file_path,
+        model_name: ASRModelList,
+        boosted_lm_words: List[str] = None,
+        boosted_lm_score: int = None,
+        max_speakers: int = None,
+    ) -> DiarizeSTTResponse:
+        url = f"/conversation/DiarizeSTT?model_name={model_name}"
+
+        data = {}
+        if boosted_lm_words is not None:
+            data["boosted_lm_words"] = str(boosted_lm_words)
+        if boosted_lm_score is not None:
+            data["boosted_lm_score"] = str(boosted_lm_score)
+        if max_speakers is not None:
+            data["max_speakers"] = str(max_speakers)
+
+        response = self.authorized_post(url, file=audio_file_path, data=data)
+        return DiarizeSTTResponse(**response)

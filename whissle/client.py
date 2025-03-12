@@ -24,7 +24,6 @@ class WhissleClient:
                 "No authentication token provided. Please pass an auth_token or set WHISSLE_AUTH_TOKEN environment variable."
             )
 
-        print(auth_token)
         self.auth_token = auth_token
 
         if config is None:  # Use default configuration

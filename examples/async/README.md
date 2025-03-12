@@ -31,7 +31,7 @@ The script showcases async/await patterns for:
 ### List Available ASR Models
 
 ```bash
-python whissle_cli.py list-models
+python async_main.py list-models
 ```
 
 The script will asynchronously fetch and display available models.
@@ -40,12 +40,12 @@ The script will asynchronously fetch and display available models.
 
 Basic usage:
 ```bash
-python whissle_cli.py speech-to-text audio_file.wav
+python async_main.py speech-to-text audio_file.wav
 ```
 
 With async options:
 ```bash
-python whissle_cli.py speech-to-text audio_file.wav \
+python async_main.py speech-to-text ../data/sample.wav \
     --model en-US-0.6b \
     --timestamps \
     --boosted-lm-words python programming \
@@ -55,13 +55,13 @@ python whissle_cli.py speech-to-text audio_file.wav \
 ### Async Text Translation
 
 ```bash
-python whissle_cli.py translate "Hello, world!" --source en --target es
+python async_main.py translate "Hello, world!" --source en --target es
 ```
 
 ### Async Text Summarization
 
 ```bash
-python whissle_cli.py summarize "Your text to summarize" \
+python async_main.py summarize "Your text to summarize" \
     --model openai \
     --instruction "summarize"
 ```

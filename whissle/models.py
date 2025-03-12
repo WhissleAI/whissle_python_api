@@ -10,7 +10,16 @@ class ASRModel(BaseModel):
 class STTResponse(BaseModel):
     transcript: str
     duration_seconds: float
+    language_code: Optional[str]
     timestamps: Optional[List]
+
+
+class DiarizeSTTResponse(BaseModel):
+    transcript: str
+    duration_seconds: float
+    language_code: Optional[str]
+    diarize_output: Optional[List]
+    timestamps: Optional[List]  # For Normal STT
 
 
 class MTResposne(BaseModel):
