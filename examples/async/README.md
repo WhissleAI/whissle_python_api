@@ -9,6 +9,7 @@ The script showcases async/await patterns for:
 - Converting speech to text with customizable options
 - Translating text between languages
 - Summarizing text using LLM models
+- Speech to text with speaker diarization
 
 ## Prerequisites
 
@@ -66,6 +67,16 @@ python async_main.py summarize "Your text to summarize" \
     --instruction "summarize"
 ```
 
+### Async Speech to Text with Diarization
+
+```bash
+python async_main.py diarize-stt ../data/sample.wav \
+    --model en-US-0.6b \
+    --max-speakers 2 \
+    --boosted-lm-words python programming \
+    --boosted-lm-score 5
+```
+
 ## Async Implementation Details
 
 The script demonstrates key async patterns:
@@ -80,7 +91,8 @@ The script demonstrates key async patterns:
 2. `async do_speech_to_text()`: Performs async speech-to-text conversion
 3. `async do_translation()`: Handles async text translation
 4. `async llm_text_summarizer()`: Demonstrates async text summarization
-5. `main()`: Orchestrates async operations using asyncio
+5. `async do_diarize_speech_to_text()`: Performs speech-to-text with speaker diarization
+6. `main()`: Orchestrates async operations using asyncio
 
 ## Key Differences from Sync Client
 

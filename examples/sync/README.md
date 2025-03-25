@@ -9,6 +9,7 @@ The script shows straightforward synchronous usage patterns for:
 - Converting speech to text with customizable options
 - Translating text between languages
 - Summarizing text using LLM models
+- Speech to text with speaker diarization
 
 ## Prerequisites
 
@@ -27,7 +28,7 @@ The script shows straightforward synchronous usage patterns for:
 
 ## Example Usage
 
-The script demonstrates four main examples:
+The script demonstrates five main examples:
 
 ### 1. List ASR Models
 
@@ -40,7 +41,7 @@ models = client.list_asr_models()
 
 ```python
 transcription = client.speech_to_text(
-    "./data/sample.wav",
+    "../data/sample.wav",
     model_name="en-US-0.6b",
     timestamps=False,
     boosted_lm_words=["reformer"],
@@ -68,6 +69,18 @@ summary = client.llm_text_summarizer(
 )
 ```
 
+### 5. Speech to Text with Diarization
+
+```python
+transcription = client.diarize_stt(
+    "../data/sample.wav",
+    model_name="en-US-0.6b",
+    max_speakers=2,
+    boosted_lm_words=["reformer"],
+    boosted_lm_score=80
+)
+```
+
 ## Implementation Details
 
 The script demonstrates key sync patterns:
@@ -83,6 +96,7 @@ The script demonstrates key sync patterns:
 3. Speech-to-text conversion with optional parameters
 4. Text translation between languages
 5. Text summarization using LLM
+6. Speech-to-text with speaker diarization
 
 ## Key Differences from Async Client
 
@@ -97,4 +111,4 @@ The script demonstrates key sync patterns:
 - This is specifically a sync client example - see async client example for asynchronous operations
 - Error handling is minimal for demonstration purposes
 - See Whissle documentation for complete API details
-- The sample code assumes existence of "./data/sample.wav" - adjust path as needed
+- The sample code assumes existence of "../data/sample.wav" - adjust path as needed

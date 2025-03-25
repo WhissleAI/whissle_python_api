@@ -27,29 +27,29 @@ def main():
     )
     print(f"Transcription: {transcription}")
 
-    # # Example 3: Machine Translation
-    # print("\n=== Translation Example ===")
-    # text_to_translate = "Hello, how are you today?"
-    # translation = client.machine_translation(
-    #     text_to_translate, source_language="en", target_language="es"
-    # )
-    # print(f"Original: {text_to_translate}")
-    # print(f"Translation: {translation}")
+    # Example 3: Machine Translation
+    print("\n=== Translation Example ===")
+    text_to_translate = "Hello, how are you today?"
+    translation = client.machine_translation(
+        text_to_translate, source_language="en", target_language="es"
+    )
+    print(f"Original: {text_to_translate}")
+    print(f"Translation: {translation}")
 
     # Example 4: Text Summarization
-    # print("\n=== Text Summarization Example ===")
-    # long_text = """
-    # The Industrial Revolution was a period of major industrialization and
-    # innovation during the late 18th and early 19th centuries. The Industrial
-    # Revolution began in Great Britain and quickly spread throughout Europe
-    # and the United States. It revolutionized the production of textiles and
-    # iron products, while also improving transportation and communication systems.
-    # """
-    # summary = client.llm_text_summarizer(
-    #     content=long_text, model_name="openai", instruction="Provide a brief summary"
-    # )
-    # print(f"Original text length: {len(long_text)} characters")
-    # print(f"Summary: {summary}")
+    print("\n=== Text Summarization Example ===")
+    long_text = """
+    The Industrial Revolution was a period of major industrialization and
+    innovation during the late 18th and early 19th centuries. The Industrial
+    Revolution began in Great Britain and quickly spread throughout Europe
+    and the United States. It revolutionized the production of textiles and
+    iron products, while also improving transportation and communication systems.
+    """
+    summary = client.llm_text_summarizer(
+        content=long_text, model_name="openai", instruction="Provide a brief summary"
+    )
+    print(f"Original text length: {len(long_text)} characters")
+    print(f"Summary: {summary}")
 
     # Example 5: Speech to Text with Diarization
     print("\n=== Diarize Speech to Text Example ===")
