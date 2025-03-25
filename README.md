@@ -5,6 +5,7 @@
 ## Features
 
 - 🎙️ Speech-to-Text (STT) with multiple model support and customization options
+- 🗣️ Speaker Diarization for multi-speaker audio transcription
 - 🌍 Machine Translation across various languages
 - 📝 Text Summarization using LLM models
 - ⚡ Both synchronous and asynchronous clients
@@ -73,6 +74,15 @@ summary = client.llm_text_summarizer(
     model_name="openai",
     instruction="Provide a brief summary"
 )
+
+# Speech to text with speaker diarization
+diarized_response = client.diarize_stt(
+    audio_file_path="multi_speaker_audio.wav",
+    model_name="en-US-0.6b",
+    max_speakers=2,
+    boosted_lm_words=["specific", "terms"],
+    boosted_lm_score=80
+)
 ```
 
 ### Asynchronous Client
@@ -109,6 +119,13 @@ async def main():
         instruction="Provide a brief summary"
     )
 
+    # Speech to text with speaker diarization
+    diarized_response = await client.diarize_stt(
+        audio_file_path="multi_speaker_audio.wav",
+        model_name="en-US-0.6b",
+        max_speakers=2
+    )
+
 asyncio.run(main())
 ```
 
@@ -125,6 +142,17 @@ response = client.speech_to_text(
     audio_file_path="path/to/audio.wav",
     model_name="en-US-0.6b",
     timestamps=False,  # Optional: Include word timestamps
+    boosted_lm_words=["specific", "terms"],  # Optional: Boost specific words
+    boosted_lm_score=80  # Optional: Boosting score
+)
+```
+
+### Speaker Diarization with Speech-to-Text
+```python
+response = client.diarize_stt(
+    audio_file_path="path/to/multi_speaker_audio.wav",
+    model_name="en-US-0.6b",
+    max_speakers=2,  # Optional: Maximum number of speakers to identify
     boosted_lm_words=["specific", "terms"],  # Optional: Boost specific words
     boosted_lm_score=80  # Optional: Boosting score
 )
@@ -179,6 +207,7 @@ All methods include proper type hints for better IDE support:
 - `STTResponse`: Speech-to-text response
 - `MTResposne`: Machine translation response
 - `LLMSummarizerResponse`: Text summarization response
+- `DiarizeSTTResponse`: Speech-to-text with speaker diarization response
 
 ## Examples
 
