@@ -1,10 +1,11 @@
 # Whissle API Python Package
 
-`whissle` is a Python package that provides easy access to the Whissle API for Speech-to-Text (STT), Machine Translation, and Text Summarization functionalities, with both synchronous and asynchronous client support.
+`whissle` is a Python package for the **Whissle production gateway** (`https://api.whissle.ai`, Bearer `wh_…` tokens) and a **legacy** HTTP API used by some internal flows (query-param auth, different paths).
 
 ## Features
 
-- 🎙️ Speech-to-Text (STT) with multiple model support and customization options
+- 🌐 **`WhissleGatewayClient` / `WhissleGatewayAsyncClient`** — transcribe, validate token, and generic JSON posts against the public gateway
+- 🎙️ **Legacy** Speech-to-Text (STT) with multiple model support and customization options
 - 🗣️ Speaker Diarization for multi-speaker audio transcription
 - 🌍 Machine Translation across various languages
 - 📝 Text Summarization using LLM models
@@ -23,7 +24,42 @@ For local development:
 pip install -e .
 ```
 
-## Authentication
+## Production gateway client
+
+Use **`WhissleGatewayClient`** for the same HTTP API documented at [api.whissle.ai/redoc](https://api.whissle.ai/redoc). Tokens are **`wh_…`** (create them from [browser.whissle.ai/access](https://browser.whissle.ai/access)).
+
+```bash
+export WHISSLE_API_TOKEN=wh_your_token_here
+```
+
+```python
+from whissle import WhissleGatewayClient
+
+with WhissleGatewayClient() as gw:
+    print(gw.validate_token())
+    result = gw.transcribe_file(
+        "recording.wav",
+        extra_form={"language": "en", "use_lm": "true", "hotwords": "Acme,SKU-42"},
+    )
+    print(result.get("transcript"))
+```
+
+Async:
+
+```python
+from whissle import WhissleGatewayAsyncClient
+
+async with WhissleGatewayAsyncClient() as gw:
+    j = await gw.validate_token()
+```
+
+For **SSE** (e.g. `POST /agent/route/stream`), use `post_json(..., extra_headers={"Accept": "text/event-stream"})` and read `response.text` or iterate the stream — see `httpx` streaming docs.
+
+---
+
+## Legacy client authentication
+
+The **`WhissleClient`** class targets the **legacy** service (default base URL may include `/v1`, **`auth_token` query parameter**). Use only if you still integrate with that backend.
 
 Provide your authentication token in one of two ways:
 
@@ -39,9 +75,9 @@ client = WhissleClient(auth_token="your_auth_token_here")
 export WHISSLE_AUTH_TOKEN=your_auth_token_here
 ```
 
-## Client Options
+## Legacy client options
 
-### Synchronous Client
+### Synchronous legacy client
 Use the sync client for straightforward, sequential operations:
 
 ```python
@@ -85,7 +121,7 @@ diarized_response = client.diarize_stt(
 )
 ```
 
-### Asynchronous Client
+### Asynchronous legacy client
 Use the async client for concurrent operations and non-blocking I/O:
 
 ```python
@@ -178,8 +214,14 @@ summary = client.llm_text_summarizer(
 
 ## Configuration
 
-- `WHISSLE_AUTH_TOKEN`: Authentication token
-- `WHISSLE_SERVER_URL`: Optional custom server URL (defaults to https://api.whissle.ai/v1)
+**Gateway**
+
+- `WHISSLE_API_TOKEN` or `WHISSLE_AUTH_TOKEN`: Bearer token (`wh_…`) for `WhissleGatewayClient`
+
+**Legacy**
+
+- `WHISSLE_AUTH_TOKEN`: Legacy API token
+- `WHISSLE_SERVER_URL`: Optional custom legacy base URL (default `https://api.whissle.ai/v1`)
 
 ## Error Handling
 
@@ -214,6 +256,16 @@ All methods include proper type hints for better IDE support:
 For more detailed examples, check out the `examples/` directory:
 - `examples/sync/`: Synchronous client examples
 - `examples/async/`: Asynchronous client examples
+
+## Publishing (maintainers)
+
+```bash
+pip install build twine
+python -m build
+twine upload dist/*
+```
+
+Bump `version` in `pyproject.toml` and `__version__` in `whissle/__init__.py` before each release.
 
 ## Contributing
 

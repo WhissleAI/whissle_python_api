@@ -95,7 +95,6 @@ class SyncWhissleClient:
             data["boosted_lm_score"] = str(boosted_lm_score)
 
         response = self.authorized_post(url, file=audio_file_path, data=data)
-        print(response)
         return STTResponse(**response)
 
     def machine_translation(

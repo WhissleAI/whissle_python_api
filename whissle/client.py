@@ -34,14 +34,10 @@ class WhissleClient:
 
     @property
     def sync_client(self):
-        """
-        Returns a Listen dot-notation router for interacting with Deepgram's transcription services.
-        """
+        """Legacy HTTP API client (query-param ``auth_token``; default base may include ``/v1``)."""
         return SyncWhissleClient(self._config)
 
     @property
     def async_client(self):
-        """
-        Returns a Read dot-notation router for interacting with Deepgram's read services.
-        """
+        """Async legacy HTTP API client."""
         return AsyncWhissleClient(self._config)

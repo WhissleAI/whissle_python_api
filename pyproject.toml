@@ -1,7 +1,7 @@
 [project]
 name = "whissle"
-version = "0.0.1"
-description = "Python SDK for Whissle API."
+version = "0.1.0"
+description = "Python SDK for Whissle — production gateway (Bearer) and legacy HTTP API."
 authors = [
     {name = "Nihar Sanda", email = "nsanda@whissle.ai"}
 ]
@@ -48,9 +48,9 @@ dev = [
 ]
 
 [project.urls]
-homepath = "https://github.com/WhissleAI"
-documentation = "https://github.com/WhissleAI"
-repository = "https://github.com/WhissleAI"
+Homepage = "https://github.com/WhissleAI"
+Documentation = "https://api.whissle.ai/redoc"
+Repository = "https://github.com/WhissleAI"
 
 [build-system]
 requires = ["setuptools", "wheel"]
