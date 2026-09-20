@@ -1,276 +1,91 @@
-# Whissle API Python Package
+# whissle — deprecated, use `whissle-sdk`
 
-`whissle` is a Python package for the **Whissle production gateway** (`https://api.whissle.ai`, Bearer `wh_…` tokens) and a **legacy** HTTP API used by some internal flows (query-param auth, different paths).
-
-## Features
-
-- 🌐 **`WhissleGatewayClient` / `WhissleGatewayAsyncClient`** — transcribe, validate token, and generic JSON posts against the public gateway
-- 🎙️ **Legacy** Speech-to-Text (STT) with multiple model support and customization options
-- 🗣️ Speaker Diarization for multi-speaker audio transcription
-- 🌍 Machine Translation across various languages
-- 📝 Text Summarization using LLM models
-- ⚡ Both synchronous and asynchronous clients
-- 🔄 Automatic response parsing to Pydantic models
-
-## Installation
-
-Install Whissle using pip:
-```bash
-pip install whissle
-```
-
-For local development:
-```bash
-pip install -e .
-```
-
-## Production gateway client
-
-Use **`WhissleGatewayClient`** for the same HTTP API documented at [api.whissle.ai/redoc](https://api.whissle.ai/redoc). Tokens are **`wh_…`** (create them from [browser.whissle.ai/access](https://browser.whissle.ai/access)).
+**This package is no longer a Whissle client.** It is a pointer to the one that is.
 
 ```bash
-export WHISSLE_API_TOKEN=wh_your_token_here
+pip uninstall whissle
+pip install whissle-sdk
 ```
 
 ```python
-from whissle import WhissleGatewayClient
+from whissle_sdk import WhissleClient
 
-with WhissleGatewayClient() as gw:
-    print(gw.validate_token())
-    result = gw.transcribe_file(
-        "recording.wav",
-        extra_form={"language": "en", "use_lm": "true", "hotwords": "Acme,SKU-42"},
-    )
-    print(result.get("transcript"))
+w = WhissleClient()                          # reads WHISSLE_API_KEY
+w.asr.transcribe("audio.wav", diarize=True)  # speech-to-text, with the metadata heads
 ```
 
-Async:
+## Why
 
-```python
-from whissle import WhissleGatewayAsyncClient
+`whissle` wrapped an HTTP API at `api.whissle.ai` and authenticated with a `wh_` token. Neither
+of those exists for you any more:
 
-async with WhissleGatewayAsyncClient() as gw:
-    j = await gw.validate_token()
-```
+- **The host is gone.** `api.whissle.ai` returns `404` on every path this package called —
+  `/v1`, `/asr/transcribe`, `/backend/api-tokens/validate`, `/redoc`, and the host root. The
+  token page the old README sent you to (`browser.whissle.ai/access`) does not resolve at all.
+- **The token type is not self-serve.** `wh_` is a legacy gateway *device* token. It is not
+  something a customer can create. Keys you can create are `wsk_` (workspace **secret**,
+  server-side) and `wpk_` (**publishable**, safe in a browser) — and it is a `wsk_` that
+  `whissle-sdk` takes.
 
-For **SSE** (e.g. `POST /agent/route/stream`), use `post_json(..., extra_headers={"Accept": "text/event-stream"})` and read `response.text` or iterate the stream — see `httpx` streaming docs.
+Rather than rebuild a second client against the live platform, this distribution now stands
+down in favour of the maintained one. Anything you import from it raises an `ImportError`
+naming the replacement, so you get told where to go instead of a confusing network failure on
+your first call.
 
----
+## Moving
 
-## Legacy client authentication
+| You had | You want |
+|---|---|
+| `from whissle import WhissleClient` | `from whissle_sdk import WhissleClient` — **a different class**, different arguments |
+| `client.speech_to_text(...)` | `w.asr.transcribe(file, ...)` |
+| `client.diarize_stt(...)` | `w.asr.transcribe(file, diarize=True, num_speakers=...)` |
+| `client.llm_text_summarizer(...)` | no direct equivalent — see below. `w.asr.transcribe(file, summarize=...)` summarises a **recording**, not arbitrary text |
+| `client.list_asr_models()` | `w.asr.status()` — what this deployment loaded |
+| `WhissleGatewayClient.transcribe_file(...)` | `w.asr.transcribe(file, ...)` |
+| `WhissleGatewayClient.transcribe_pcm(...)` | `w.asr.transcribe_pcm(samples, ...)` |
+| `export WHISSLE_AUTH_TOKEN=wh_…` | `export WHISSLE_API_KEY=wsk_…` (create the key in your workspace settings) |
 
-The **`WhissleClient`** class targets the **legacy** service (default base URL may include `/v1`, **`auth_token` query parameter**). Use only if you still integrate with that backend.
+`whissle-sdk` also covers what this package never did: the Voice Agents platform — agents,
+sessions and traces, streaming chat, browser session tokens, knowledge, tools, compliance,
+analytics and usage. See its own README for the full surface.
 
-Provide your authentication token in one of two ways:
+**Three things do not carry over.** Text `machine_translation` and text `llm_text_summarizer`
+took arbitrary strings and have no equivalent door on the live platform. Speech translation
+(`/asr/translate`, `/asr/s2s`) exists but is deliberately still restricted to the legacy token —
+those legs compose speech with a language model and have no per-second price, so a workspace key
+there would be an unbilled door. If you depend on any of the three, talk to us before you
+migrate.
 
-1. Direct initialization:
-```python
-from whissle import WhissleClient
+## Name collision
 
-client = WhissleClient(auth_token="your_auth_token_here")
-```
+`whissle_sdk` exports a class **also** called `WhissleClient`. It is not this package's
+`WhissleClient` and does not take the same arguments. If an editor autocompletes you into
+`whissle`, that is this tombstone — the working one is imported from `whissle_sdk`.
 
-2. Environment variable:
-```bash
-export WHISSLE_AUTH_TOKEN=your_auth_token_here
-```
+## Still installed?
 
-## Legacy client options
+`import whissle` keeps working and emits a `DeprecationWarning`; `whissle.__version__` and
+`help(whissle)` still read. Every client name, and every module that used to hold one, raises
+`ImportError` with the migration note above.
 
-### Synchronous legacy client
-Use the sync client for straightforward, sequential operations:
+## Licence
 
-```python
-from whissle import WhissleClient
+MIT. See [LICENSE](LICENSE). Releases up to and including `0.0.1` shipped contradictory
+metadata — an MIT classifier over GPL-3 licence text. MIT is and always was the intent; `0.2.0`
+makes the file and the metadata agree.
 
-client = WhissleClient().sync_client
+## Maintainers
 
-# List ASR models
-models = client.list_asr_models()
-
-# Speech to text
-response = client.speech_to_text(
-    audio_file_path="audio.wav",
-    model_name="en-US-0.6b",
-    timestamps=True,
-    boosted_lm_words=["specific", "terms"],
-    boosted_lm_score=80
-)
-
-# Translation
-translation = client.machine_translation(
-    text="Hello, world!",
-    source_language="en",
-    target_language="es"
-)
-
-# Summarization
-summary = client.llm_text_summarizer(
-    content="Long text here...",
-    model_name="openai",
-    instruction="Provide a brief summary"
-)
-
-# Speech to text with speaker diarization
-diarized_response = client.diarize_stt(
-    audio_file_path="multi_speaker_audio.wav",
-    model_name="en-US-0.6b",
-    max_speakers=2,
-    boosted_lm_words=["specific", "terms"],
-    boosted_lm_score=80
-)
-```
-
-### Asynchronous legacy client
-Use the async client for concurrent operations and non-blocking I/O:
-
-```python
-import asyncio
-from whissle import WhissleClient
-
-async def main():
-    client = WhissleClient().async_client
-
-    # List ASR models
-    models = await client.list_asr_models()
-
-    # Speech to text
-    response = await client.speech_to_text(
-        audio_file_path="audio.wav",
-        model_name="en-US-0.6b",
-        timestamps=True
-    )
-
-    # Translation
-    translation = await client.machine_translation(
-        text="Hello, world!",
-        source_language="en",
-        target_language="es"
-    )
-
-    # Summarization
-    summary = await client.llm_text_summarizer(
-        content="Long text here...",
-        model_name="openai",
-        instruction="Provide a brief summary"
-    )
-
-    # Speech to text with speaker diarization
-    diarized_response = await client.diarize_stt(
-        audio_file_path="multi_speaker_audio.wav",
-        model_name="en-US-0.6b",
-        max_speakers=2
-    )
-
-asyncio.run(main())
-```
-
-## API Methods
-
-### List ASR Models
-```python
-models = client.list_asr_models()  # or await client.list_asr_models()
-```
-
-### Speech-to-Text
-```python
-response = client.speech_to_text(
-    audio_file_path="path/to/audio.wav",
-    model_name="en-US-0.6b",
-    timestamps=False,  # Optional: Include word timestamps
-    boosted_lm_words=["specific", "terms"],  # Optional: Boost specific words
-    boosted_lm_score=80  # Optional: Boosting score
-)
-```
-
-### Speaker Diarization with Speech-to-Text
-```python
-response = client.diarize_stt(
-    audio_file_path="path/to/multi_speaker_audio.wav",
-    model_name="en-US-0.6b",
-    max_speakers=2,  # Optional: Maximum number of speakers to identify
-    boosted_lm_words=["specific", "terms"],  # Optional: Boost specific words
-    boosted_lm_score=80  # Optional: Boosting score
-)
-```
-
-### Machine Translation
-```python
-translation = client.machine_translation(
-    text="Hello, world!",
-    source_language="en",
-    target_language="es"
-)
-```
-
-### Text Summarization
-```python
-summary = client.llm_text_summarizer(
-    content="Your long text here...",
-    model_name="openai",
-    instruction="Provide a brief summary"
-)
-```
-
-## Configuration
-
-**Gateway**
-
-- `WHISSLE_API_TOKEN` or `WHISSLE_AUTH_TOKEN`: Bearer token (`wh_…`) for `WhissleGatewayClient`
-
-**Legacy**
-
-- `WHISSLE_AUTH_TOKEN`: Legacy API token
-- `WHISSLE_SERVER_URL`: Optional custom legacy base URL (default `https://api.whissle.ai/v1`)
-
-## Error Handling
-
-The library provides consistent error handling for both sync and async clients:
-
-```python
-from whissle import HttpError
-
-try:
-    # Whissle API calls
-except HttpError as e:
-    print(f"API Error: {e.status_code} - {e.message}")
-```
-
-## Dependencies
-
-- Python 3.8+
-- httpx: For HTTP requests (both sync and async)
-- pydantic: For response modeling
-
-## Type Hints
-
-All methods include proper type hints for better IDE support:
-- `ASRModel`: ASR model information
-- `STTResponse`: Speech-to-text response
-- `MTResposne`: Machine translation response
-- `LLMSummarizerResponse`: Text summarization response
-- `DiarizeSTTResponse`: Speech-to-text with speaker diarization response
-
-## Examples
-
-For more detailed examples, check out the `examples/` directory:
-- `examples/sync/`: Synchronous client examples
-- `examples/async/`: Asynchronous client examples
-
-## Publishing (maintainers)
+`whissle-sdk` must be on PyPI **before** this release is published, or the install line above
+points at nothing. Then:
 
 ```bash
 pip install build twine
 python -m build
+twine check dist/*
 twine upload dist/*
 ```
 
-Bump `version` in `pyproject.toml` and `__version__` in `whissle/__init__.py` before each release.
-
-## Contributing
-
-Contributions are welcome! Please submit pull requests or open issues on our GitHub repository.
-
 ## Contact
 
-For support or inquiries, contact: nsanda@whissle.ai
+support@whissle.ai

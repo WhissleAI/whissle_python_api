@@ -1,63 +1,54 @@
 [project]
 name = "whissle"
-version = "0.1.0"
-description = "Python SDK for Whissle — production gateway (Bearer) and legacy HTTP API."
-authors = [
-    {name = "Nihar Sanda", email = "nsanda@whissle.ai"}
-]
-license = {file = "LICENSE"}
+version = "0.2.0"
+description = "DEPRECATED — the Whissle Python client is now `whissle-sdk` (import `whissle_sdk`). This package only tells you so."
+authors = [{ name = "Whissle AI", email = "support@whissle.ai" }]
 readme = "README.md"
-requires-python = ">3.8"
+requires-python = ">=3.8"
 
-keywords = ["stt", "tts", "streaming", "real-time"]
+# SPDX expression plus the file itself (PEP 639). The old table form,
+# `license = {file = "LICENSE"}`, inlined the whole licence file into the
+# free-text `License:` metadata field — which is how 0.0.1 shipped the GPL-3
+# text and the MIT classifier at the same time.
+license = "MIT"
+license-files = ["LICENSE"]
 
-classifiers=[
-        "Development Status :: 3 - Alpha",
-        "Intended Audience :: Developers",
-        "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: MIT License",
-        "Natural Language :: English",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence",
-        "Topic :: Software Development :: Libraries",
-        "Topic :: Software Development :: Libraries :: Python Modules",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: 3.11",
-    ]
+keywords = ["whissle", "deprecated", "stt", "tts", "streaming", "real-time"]
 
-dependencies = [
-    "python-dotenv",
-    "pydantic",
-    "httpx"
+classifiers = [
+    "Development Status :: 7 - Inactive",
+    "Intended Audience :: Developers",
+    # No "License :: OSI Approved ::" classifier: PEP 639 forbids pairing one
+    # with a `License-Expression`, and PyPI rejects an upload that does.
+    "Natural Language :: English",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
 ]
+
+# None. A deprecation notice needs no HTTP client, no settings loader and no
+# validation library; `pip install whissle` should not drag a dependency tree
+# onto someone whose only remaining use for it is to be told to uninstall it.
+dependencies = []
 
 [project.optional-dependencies]
-all = [
-    "pre-commit",
-    "ruff",
-    "python-dotenv",
-    "pydantic",
-    "httpx"
-]
-
-dev = [
-    "pre-commit",
-    "ruff"
-]
+# The tombstone's behaviour is its whole contract, so it has a test suite.
+dev = ["pytest>=7.0"]
 
 [project.urls]
-Homepage = "https://github.com/WhissleAI"
-Documentation = "https://api.whissle.ai/redoc"
-Repository = "https://github.com/WhissleAI"
+Homepage = "https://whissle.ai"
+Repository = "https://github.com/WhissleAI/whissle_python_api"
+Changelog = "https://github.com/WhissleAI/whissle_python_api/blob/main/CHANGELOG.md"
 
 [build-system]
-requires = ["setuptools", "wheel"]
+# >=77 for PEP 639 `License-Expression` support; without it the SPDX
+# expression is silently dropped back to a free-text field.
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-include-package-data = true
+# Named, not discovered. There is one package and it should stay that way.
+packages = ["whissle", "whissle.clients"]
 
-[tool.setuptools.packages.find]
-where = ["."]
+[tool.pytest.ini_options]
+testpaths = ["tests"]
