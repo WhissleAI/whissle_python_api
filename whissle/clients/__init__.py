@@ -1,4 +1,5 @@
-from .async_client import AsyncWhissleClient
-from .client import SyncWhissleClient
+"""Retired. See :mod:`whissle` — the client moved to ``whissle-sdk``."""
 
-__all__ = ["AsyncWhissleClient", "SyncWhissleClient"]
+from .._moved import moved
+
+raise moved("The `whissle.clients` package")
